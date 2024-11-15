@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import time
+import random
 
 app = Flask(__name__)
 
@@ -38,13 +39,14 @@ condition_hours = {
     "epilepsy": 100,
 }
 
-# Example of client data mapping based on case number
-client_data = {
-    "128792": {
-        "conditions": ["mobility_issue", "chronic_illness"],  # List of conditions
-    },
-    # Add other cases as needed
-}
+
+# Generate sample condition data for the client
+def generate_client_data():
+    # Randomly select 3 conditions
+    dummy_client_data = random.sample(list(condition_hours.keys()), 3)
+
+    return dummy_client_data
+
 
 # Function to estimate personal care hours
 def estimate_care_hours(conditions):
@@ -55,6 +57,7 @@ def estimate_care_hours(conditions):
             total_hours += condition_hours[condition]
     return total_hours
 
+
 # Define the route for estimating personal care hours
 @app.route('/EstimateHours', methods=['POST'])
 def estimate_hours():
@@ -63,35 +66,26 @@ def estimate_hours():
     data = request.json
 
     # Extract case number from the request
-    case_number = data.get('caseNumber')
-
-    if case_number not in client_data:
-        return jsonify({"error": "Case number not found"}), 400
-
-    # Retrieve client details based on case number
-    client = client_data[case_number]
+    # case_number = data.get('caseNumber')
+    # Will use this casenumber to access database to get conditions later.
 
     # Get the client's conditions
-    conditions = client.get("conditions", [])
+    conditions = generate_client_data()
 
     # Estimate the care hours based on conditions
     estimated_hours = estimate_care_hours(conditions)
 
     # Prepare the response
-    response = {
-        "firstName": client["firstName"],
-        "lastName": client["lastName"],
-        "address": client["address"],
-        "caseNumber": case_number,
-        "estimatedMonthlyHour": estimated_hours
-    }
-    
+    data['estimatedMonthlyHour'] = estimated_hours
+    response = data
+
     # Calculate elapsed time for response (for performance requirement)
     elapsed_time = time.time() - start_time
+    print(f'Time to run this microservice: {elapsed_time}')
     if elapsed_time > 2:
-        return jsonify({"error": "Response time exceeded the 2-second limit"}), 500
-    
+        print("error: Response time exceeded the 2-second limit")
+
     return jsonify(response)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="localhost",port=5678, debug=True)
