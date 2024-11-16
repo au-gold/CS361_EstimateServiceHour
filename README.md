@@ -8,50 +8,48 @@ This microservice estimates the number of personal care hours required for clien
 - **Assessment-Based Calculation:** The service factors in specific criteria like medical conditions and physical abilities to ensure accurate estimates.
 - **Return Assessment Results:** The service returns the estimated care hours in a standardized JSON format for easy integration with other systems.
 
-## User Stories
+## How to Use This Microservice
 
-### User Story 1: Estimate Personal Care Hours
+1. **Run the Microservice**:
+   - Use Python to start the microservice:
+     ```python estimate_hours.py```
+   - This will launch the microservice at `http://localhost:5678`.
 
-**As a social worker**, I want the service to estimate the number of personal care hours required based on client needs so that I can make informed decisions on support levels.
+2. **API Communication**:
+   - The microservice communicates via HTTP.
+   - To estimate personal care hours, send a `POST` request to the endpoint: `http://localhost:5678/EstimateHours`.
 
-**Acceptance Criteria:**
-- Given client demographic and assessment data, when the data is submitted to the service, the service should return an estimated number of personal care hours.
-- The system should be reliable, with an accuracy of within 5% based on pre-defined assessment factors.
-- The system should respond within 2 seconds to ensure timely results for social workers.
+3. **Request Body Requirements**:
+   - The `POST` request body must include, at minimum, a `caseNumber` and its value. This variable is case-sensitive.
+   - The microservice will internally generate client condition data for demonstration purposes (this simulates database retrieval based on `caseNumber`).
 
-### User Story 2: Assessment-Based Calculation
+4. **Example Python Code for API Call**:
+   Use the following Python code to call the API and receive the estimated care hours:
 
-**As a social worker**, I want the service to factor in specific criteria (e.g., medical conditions, physical limitations) in the assessment to ensure the estimate is relevant to the client’s situation.
+   ```
+   import requests
 
-**Acceptance Criteria:**
-- The service factors in each assessment criterion (e.g., health conditions, mobility scores) to calculate the estimated care hours.
-- The system should apply weights to each criterion based on pre-defined importance levels.
-- The system should respond within 2 seconds to ensure timely results.
+   # Define the URL and the request payload
+   url = "http://localhost:5678/EstimateHours"
+   payload = {
+       "firstName": "George",
+       "lastName": "King",
+       "address": "7123 Something Ave.",
+       "caseNumber": "128792"
+   }
 
-### User Story 3: Return Assessment Results
+   # Send a POST request
+   response = requests.post(url, json=payload)
 
-**As a social worker**, I want the service to return the estimated care hours in a format that the main program can easily use, so that I can see the results without additional data processing.
+   # Print the response
+   if response.status_code == 200:
+       print("Response received:")
+       print(response.json())
+   else:
+       print(f"Error: {response.status_code}")
 
-**Acceptance Criteria:**
-- The service should return a JSON object containing the estimated care hours.
-- The service should ensure interoperability by using a standard JSON format for seamless integration.
-
-## API Endpoint
-
-### `POST /EstimateHours`
-
-- **Description:** This endpoint receives client assessment data and returns the estimated number of personal care hours required based on the conditions and medical history associated with the provided case number.
-- **Request Body:**
-  ```json
-  {
-    "firstName": "George",
-    "lastName": "King",
-    "address": "7123 Something Ave.",
-    "caseNumber": "128792"
-  }
-
-- **Respond Body:**
-  ```json
+5. **Respond Body:**
+```json
   {
     "firstName": "George",
     "lastName": "King",
