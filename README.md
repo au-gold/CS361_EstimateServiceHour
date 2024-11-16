@@ -26,7 +26,7 @@ This microservice estimates the number of personal care hours required for clien
 4. **Example Python Code for API Call**:
    Use the following Python code to call the API and receive the estimated care hours:
 
-   ```
+   ```python
    import requests
 
    # Define the URL and the request payload
