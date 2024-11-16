@@ -87,5 +87,6 @@ def estimate_hours():
 
     return jsonify(response)
 
+
 if __name__ == '__main__':
-    app.run(host="localhost",port=5678, debug=True)
+    app.run(host="localhost", port=5678, debug=True)
