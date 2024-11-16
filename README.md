@@ -48,7 +48,12 @@ This microservice estimates the number of personal care hours required for clien
    else:
        print(f"Error: {response.status_code}")
 
-5. **Respond Body:**
+5. **How to Receive Data**
+   - The microservice responds with a JSON object containing the estimated personal care hours based on the provided caseNumber.
+   - It is a HTTP response with a JSON body containing the requested data.
+   - In Python, `response = requests.post(url, json=payload)` will store the JSON to 'response' variable.
+
+7. **Respond Body:**
 ```json
   {
     "firstName": "George",
