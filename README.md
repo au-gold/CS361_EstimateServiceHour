@@ -62,3 +62,7 @@ This microservice estimates the number of personal care hours required for clien
     "caseNumber": "128792",
     "estimatedMonthlyHour": 150
   }
+```
+
+## UML Sequence Diagram
+![](/uml_seq_diagram.png)
