@@ -3,6 +3,9 @@ from flask_cors import CORS
 import time
 import random
 
+# Constants
+RESPONSE_TIME_LIMIT = 2  # Time limit in seconds
+
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
@@ -41,14 +44,10 @@ condition_hours = {
     "epilepsy": 100,
 }
 
-
 # Generate sample condition data for the client
 def generate_client_data():
     # Randomly select 3 conditions
-    dummy_client_data = random.sample(list(condition_hours.keys()), 3)
-
-    return dummy_client_data
-
+    return random.sample(list(condition_hours.keys()), 3)
 
 # Function to estimate personal care hours
 def estimate_care_hours(conditions):
@@ -59,6 +58,12 @@ def estimate_care_hours(conditions):
             total_hours += condition_hours[condition]
     return total_hours
 
+# Function to handle response timing and validation
+def handle_response_time(start_time):
+    elapsed_time = time.time() - start_time
+    print(f'Time to run this microservice: {elapsed_time}')
+    if elapsed_time > RESPONSE_TIME_LIMIT:
+        print("error: Response time exceeded the 2-second limit")
 
 # Define the route for estimating personal care hours
 @app.route('/EstimateHours', methods=['POST'])
@@ -81,14 +86,10 @@ def estimate_hours():
     data['estimatedMonthlyHour'] = estimated_hours
     response = data
 
-    # Calculate elapsed time for response (for performance requirement)
-    elapsed_time = time.time() - start_time
-    print(f'Time to run this microservice: {elapsed_time}')
-    if elapsed_time > 2:
-        print("error: Response time exceeded the 2-second limit")
+    # Handle response timing
+    handle_response_time(start_time)
 
     return jsonify(response)
-
 
 if __name__ == '__main__':
     app.run(host="localhost", port=5678, debug=True)
